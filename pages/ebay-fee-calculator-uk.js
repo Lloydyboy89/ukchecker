@@ -54,7 +54,6 @@ export default function EbayFeeCalculator() {
 
     const revenue = (p + bs) * q;
 
-    // Dynamic category + store fee
     let baseFee = categoryFees[category] || 0.128;
     if (storeType === 'basic') baseFee -= 0.02;
     if (storeType === 'premium') baseFee -= 0.03;
@@ -62,9 +61,7 @@ export default function EbayFeeCalculator() {
     const ebayFee = revenue * baseFee + 0.30 * q;
     const paypalFee = includePayPal ? revenue * 0.029 + 0.30 * q : 0;
 
-    // Scale item cost and promoted fee by quantity
     const otherCosts = (ic + pf) * q + ss;
-
     const netProfit = revenue - (ebayFee + paypalFee + otherCosts);
 
     setResults({ revenue: revenue.toFixed(2), ebayFee: ebayFee.toFixed(2), paypalFee: paypalFee.toFixed(2), otherCosts: otherCosts.toFixed(2), netProfit: netProfit.toFixed(2) });
@@ -81,7 +78,10 @@ export default function EbayFeeCalculator() {
       <div style={{ textAlign: 'right', marginBottom: '20px' }}>
         <button onClick={toggleTheme} style={themeToggleStyle(theme)}>{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</button>
       </div>
+
+      {/* Modern Header */}
       <h1 style={headingStyle}>eBay Fee Calculator (UK)</h1>
+      <div style={{ width: '60px', height: '4px', background: 'linear-gradient(90deg, #1a73e8, #4285f4)', borderRadius: '2px', marginBottom: '20px' }} />
       <p style={subheadingStyle(theme)}>Quickly estimate your fees and net profit for each sale.</p>
 
       <div style={{ marginBottom: '15px' }}><label>Item Price (£):</label><input type="number" value={itemPrice} onChange={(e) => setItemPrice(e.target.value)} style={inputStyle(theme)} /></div>
@@ -144,7 +144,7 @@ export default function EbayFeeCalculator() {
 
 // Styles
 const containerStyle = (theme) => ({
-  maxWidth: '600px', margin: '60px auto', padding: '30px', borderRadius: '12px',
+  maxWidth: '600px', margin: '80px auto', padding: '30px', borderRadius: '12px',
   backgroundColor: theme === 'dark' ? '#303134' : '#fff',
   boxShadow: theme === 'dark' ? '0 8px 20px rgba(0,0,0,0.7)' : '0 8px 20px rgba(0,0,0,0.1)',
   fontFamily: "'Inter', Arial, sans-serif", transition: 'all 0.3s ease'
@@ -156,8 +156,18 @@ const inputStyle = (theme) => ({
   color: theme === 'dark' ? '#e8eaed' : '#202124', fontSize: '16px', marginTop: '4px', marginBottom: '8px'
 });
 
-const headingStyle = { fontSize: '24px', marginBottom: '10px' };
-const subheadingStyle = (theme) => ({ fontSize: '14px', marginBottom: '20px', color: theme === 'dark' ? '#bdc1c6' : '#5f6368' });
+const headingStyle = {
+  fontSize: '2.5rem',
+  fontWeight: 700,
+  letterSpacing: '0.5px',
+  marginBottom: '8px',
+  lineHeight: 1.2,
+  background: 'linear-gradient(90deg, #1a73e8, #4285f4)',
+  WebkitBackgroundClip: 'text',
+  WebkitTextFillColor: 'transparent'
+};
+
+const subheadingStyle = (theme) => ({ fontSize: '1rem', fontWeight: 400, color: theme === 'dark' ? '#bdc1c6' : '#5f6368', marginBottom: '30px' });
 const themeToggleStyle = (theme) => ({ cursor: 'pointer', padding: '6px 12px', borderRadius: '20px', border: 'none', backgroundColor: theme === 'dark' ? '#5f6368' : '#e8eaed', color: theme === 'dark' ? '#e8eaed' : '#202124', fontWeight: 'bold', transition: 'all 0.3s ease' });
 const advancedToggleStyle = { marginBottom: '15px', cursor: 'pointer', background: 'none', border: 'none', color: '#1a73e8', fontWeight: 'bold' };
 const calcButtonStyle = { padding: '10px 20px', borderRadius: '6px', border: 'none', cursor: 'pointer', backgroundColor: '#1a73e8', color: '#fff', fontWeight: 'bold', marginRight: '10px', transition: 'background-color 0.3s ease' };

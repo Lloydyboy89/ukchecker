@@ -27,7 +27,6 @@ export default function EbayFeeCalculator() {
 
   const toggleTheme = () => setTheme(theme === 'light' ? 'dark' : 'light');
 
-  // Category-specific eBay fees
   const categoryFees = {
     default: 0.128, antiques: 0.12, art: 0.12, baby: 0.128, books_magazines: 0.10,
     business_industrial: 0.128, cameras_photo: 0.128, cellphones_accessories: 0.128,
@@ -62,7 +61,10 @@ export default function EbayFeeCalculator() {
 
     const ebayFee = revenue * baseFee + 0.30 * q;
     const paypalFee = includePayPal ? revenue * 0.029 + 0.30 * q : 0;
-    const otherCosts = ic + ss + pf;
+
+    // Scale item cost and promoted fee by quantity
+    const otherCosts = (ic + pf) * q + ss;
+
     const netProfit = revenue - (ebayFee + paypalFee + otherCosts);
 
     setResults({ revenue: revenue.toFixed(2), ebayFee: ebayFee.toFixed(2), paypalFee: paypalFee.toFixed(2), otherCosts: otherCosts.toFixed(2), netProfit: netProfit.toFixed(2) });
@@ -84,7 +86,7 @@ export default function EbayFeeCalculator() {
 
       <div style={{ marginBottom: '15px' }}><label>Item Price (£):</label><input type="number" value={itemPrice} onChange={(e) => setItemPrice(e.target.value)} style={inputStyle(theme)} /></div>
       <div style={{ marginBottom: '15px' }}><label>Buyer Paid Shipping (£):</label><input type="number" value={buyerShipping} onChange={(e) => setBuyerShipping(e.target.value)} style={inputStyle(theme)} /></div>
-      <div style={{ marginBottom: '15px' }}><label>Item Cost (£):</label><input type="number" value={itemCost} onChange={(e) => setItemCost(e.target.value)} style={inputStyle(theme)} /></div>
+      <div style={{ marginBottom: '15px' }}><label>Item Cost (£ per item):</label><input type="number" value={itemCost} onChange={(e) => setItemCost(e.target.value)} style={inputStyle(theme)} /></div>
       <div style={{ marginBottom: '15px' }}><label>Seller Paid Shipping (£):</label><input type="number" value={sellerShipping} onChange={(e) => setSellerShipping(e.target.value)} style={inputStyle(theme)} /></div>
       <div style={{ marginBottom: '15px' }}><label>Quantity:</label><input type="number" min="1" value={quantity} onChange={(e) => setQuantity(e.target.value)} style={inputStyle(theme)} /></div>
 
@@ -112,7 +114,7 @@ export default function EbayFeeCalculator() {
             <label><input type="checkbox" checked={includePayPal} onChange={() => setIncludePayPal(!includePayPal)} />&nbsp;Include PayPal Fee (2.9% + £0.30)</label>
           </div>
           <div style={{ marginBottom: '10px' }}>
-            <label>Promoted Listings Fee (£):</label>
+            <label>Promoted Listings Fee (£ per item):</label>
             <input type="number" value={promotedFee} onChange={(e) => setPromotedFee(e.target.value)} style={inputStyle(theme)} />
           </div>
         </div>
